@@ -1,12 +1,16 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
+
 from app.db.session import Base, engine
 from app.routes.events import router as events_router
 from app.routes.cop import router as cop_router
 from app.routes.analyst import router as analyst_router
-from fastapi.middleware.cors import CORSMiddleware
+
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI(
     title="SitRep Fusion API",
     description="Railway-ready TRL 4 prototype for multidomain sensing, fusion, COP, and decision support.",
@@ -19,13 +23,6 @@ app.add_middleware(
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
-)
-Base.metadata.create_all(bind=engine)
-
-app = FastAPI(
-    title="SitRep Fusion API",
-    description="Railway-ready TRL 4 prototype for multidomain sensing, fusion, COP, and decision support.",
-    version="0.1.0",
 )
 
 app.include_router(events_router)
@@ -55,4 +52,5 @@ def dashboard():
     index_file = dashboard_dir / "index.html"
     if index_file.exists():
         return index_file.read_text(encoding="utf-8")
+    return "<h1>SitRep Fusion API online</h1><p>Dashboard folder not found, but API is running.</p>"
     return "<h1>SitRep Fusion API online</h1><p>Dashboard folder not found, but API is running.</p>"
