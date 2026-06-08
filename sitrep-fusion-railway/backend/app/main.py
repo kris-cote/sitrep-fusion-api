@@ -19,8 +19,10 @@ app.include_router(events_router)
 app.include_router(cop_router)
 app.include_router(analyst_router)
 
-dashboard_dir = Path(__file__).resolve().parents[2] / "dashboard"
-app.mount("/static", StaticFiles(directory=str(dashboard_dir)), name="static")
+dashboard_dir = Path(__file__).resolve().parents[1] / "dashboard"
+
+if dashboard_dir.exists():
+    app.mount("/static", StaticFiles(directory=str(dashboard_dir)), name="static")
 
 @app.get("/")
 def root():
@@ -37,4 +39,7 @@ def health():
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard():
-    return (dashboard_dir / "index.html").read_text(encoding="utf-8")
+    index_file = dashboard_dir / "index.html"
+    if index_file.exists():
+        return index_file.read_text(encoding="utf-8")
+    return "<h1>SitRep Fusion API online</h1><p>Dashboard folder not found, but API is running.</p>"
