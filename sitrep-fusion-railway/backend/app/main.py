@@ -6,7 +6,20 @@ from app.db.session import Base, engine
 from app.routes.events import router as events_router
 from app.routes.cop import router as cop_router
 from app.routes.analyst import router as analyst_router
+from fastapi.middleware.cors import CORSMiddleware
+app = FastAPI(
+    title="SitRep Fusion API",
+    description="Railway-ready TRL 4 prototype for multidomain sensing, fusion, COP, and decision support.",
+    version="0.1.0",
+)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
