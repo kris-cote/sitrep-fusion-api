@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <title>SitRep Fusion COP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#0b1020; color:white; }
+    header { padding:12px 16px; background:#111936; display:flex; justify-content:space-between; align-items:center; }
+    #map { height: calc(100vh - 60px); width: 70%; float:left; }
+    #panel { height: calc(100vh - 60px); width: 30%; float:right; overflow:auto; background:#0e1428; }
+    .track { padding:12px; border-bottom:1px solid #26304f; }
+    .urgent { border-left:6px solid #ff3b30; }
+    .high-risk { border-left:6px solid #ff9500; }
+    .suspicious { border-left:6px solid #ffd60a; }
+    .normal { border-left:6px solid #34c759; }
+    button { padding:6px 10px; cursor:pointer; }
+    pre { white-space:pre-wrap; }
+  </style>
+</head>
+<body>
+<header>
+  <strong>SitRep Fusion — Common Operational Picture</strong>
+  <span id="status">Loading...</span>
+</header>
+<div id="map"></div>
+<div id="panel"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
