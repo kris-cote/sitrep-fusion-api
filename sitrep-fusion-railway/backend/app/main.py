@@ -8,6 +8,7 @@ from app.db.session import Base, engine
 from app.routes.events import router as events_router
 from app.routes.cop import router as cop_router
 from app.routes.analyst import router as analyst_router
+from app.routes.history import router as history_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -28,6 +29,7 @@ app.add_middleware(
 app.include_router(events_router)
 app.include_router(cop_router)
 app.include_router(analyst_router)
+app.include_router(history_router)
 
 dashboard_dir = Path(__file__).resolve().parents[1] / "dashboard"
 
