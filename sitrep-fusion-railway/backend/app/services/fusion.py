@@ -11,7 +11,17 @@ def fuse_event(db: Session, event: SensorEvent) -> Track:
         Track.object_type == event.object_type,
         Track.is_active == True
     ).all()
+existing_by_label = db.query(Track).filter(
+    Track.tenant_id == event.tenant_id,
+    Track.label == (event.object_id or f"{event.object_type.upper()}-TRACK"),
+    Track.is_active == True
+).first()
 
+if existing_by_label:
+    best = existing_by_label
+else:
+    best = None
+    
     best = None
     best_distance = None
 
