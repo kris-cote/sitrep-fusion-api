@@ -6,30 +6,29 @@ from app.services.threat import score_event
 from app.config import settings
 
 def fuse_event(db: Session, event: SensorEvent) -> Track:
-    tracks = db.query(Track).filter(
+    source = f"{event.source}:{event.sensor_type}"
+    label = event.object_id or f"{event.object_type.upper()}-TRACK"
+
+    best = db.query(Track).filter(
         Track.tenant_id == event.tenant_id,
-        Track.object_type == event.object_type,
+        Track.label == label,
         Track.is_active == True
-    ).all()
-existing_by_label = db.query(Track).filter(
-    Track.tenant_id == event.tenant_id,
-    Track.label == (event.object_id or f"{event.object_type.upper()}-TRACK"),
-    Track.is_active == True
-).first()
+    ).first()
 
-if existing_by_label:
-    best = existing_by_label
-else:
-    best = None
-    
-    best = None
-    best_distance = None
+    if best is None:
+        tracks = db.query(Track).filter(
+            Track.tenant_id == event.tenant_id,
+            Track.object_type == event.object_type,
+            Track.is_active == True
+        ).all()
 
-    for t in tracks:
-        d = haversine_m(event.lat, event.lon, t.lat, t.lon)
-        if d <= settings.fusion_distance_meters and (best_distance is None or d < best_distance):
-            best = t
-            best_distance = d
+        best_distance = None
+
+        for t in tracks:
+            d = haversine_m(event.lat, event.lon, t.lat, t.lon)
+            if d <= settings.fusion_distance_meters and (best_distance is None or d < best_distance):
+                best = t
+                best_distance = d
 
     source = f"{event.source}:{event.sensor_type}"
     if best:
